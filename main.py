@@ -21,8 +21,6 @@ clock = pygame.time.Clock()
 
 
 launched = True
-management_canvas = ManagementCanvas(root, clock, launched, ROOT_WIDTH, ROOT_HEIGHT)
-management_canvas.create_management_menu_environment()
 
 while launched:
     # reset the screen to black
@@ -30,12 +28,6 @@ while launched:
 
     # (fps) speed of the mouvement
     clock.tick(120)
-
-    # verify if the game is launch
-    launched = management_canvas.launched
-
-    # check the event in management canvas
-    management_canvas.call_every_frame()
 
     # main loop
     pygame.display.update()
