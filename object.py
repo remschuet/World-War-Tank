@@ -33,3 +33,7 @@ class Object:
         self.object_image = pygame.transform.scale(self.object_image, (self.width, self.height))
         # draw the image using the position x, y
         self.root.blit(self.object_image, (self.position_x, self.position_y))
+
+    def set_new_position(self):
+        self.collision.set_new_position_in_dict(self.name_id, self.position_x, self.position_y,
+                                                self.width, self.height)

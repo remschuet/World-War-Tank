@@ -1,6 +1,7 @@
 from player import Player
 import pygame
 from collision import Collision
+from brick import Brick
 
 
 class Gameplay:
@@ -22,16 +23,30 @@ class Gameplay:
                                                             (self.ROOT_WIDTH, self.ROOT_HEIGHT))
         # create collision management
         self.collision = Collision()
+
+        self.list_of_brick = []
+        self.number_of_brick = 0
+
+        self.list_of_player = []
+
         # create player
         self.set_new_player()
+        self.create_brick_level1()
 
     def set_new_player(self):
         self.player = Player(self.root, "tank_up", "tank1", 100, 100, self.TANK_WIDTH, self.TANK_HEIGHT,
                              self.object_speed, self.collision)
 
+    def create_brick_level1(self):
+        self.number_of_brick += 1
+        self.list_of_brick.append(
+            Brick(self.root, "brick", "brick" + str(self.number_of_brick), 300, 300, self.TANK_WIDTH,
+                  self.TANK_HEIGHT, self.object_speed, self.collision))
+
     def call_every_frame(self):
         self.background_draw()
         self.player.set_object_image()
+        self.draw_brick()
 
     def key_pressed(self, keys):
         if keys[pygame.K_LEFT] and self.player.position_x > 0:
@@ -45,3 +60,7 @@ class Gameplay:
 
     def background_draw(self):
         self.root.blit(self.gameplay_image_level1, [0, 0])
+
+    def draw_brick(self):
+        for brick in self.list_of_brick:
+            brick.draw()
