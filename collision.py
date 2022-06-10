@@ -1,5 +1,9 @@
 class Collision:
-    def __init__(self):
+    def __init__(self, ROOT_WIDTH, ROOT_HEIGHT):
+
+        self.ROOT_WIDTH = ROOT_WIDTH
+        self.ROOT_HEIGHT = ROOT_HEIGHT
+
         # dictionary for object name: x, y, w, h
         self.object_position_dict = {}
 
@@ -8,9 +12,12 @@ class Collision:
 
     def set_new_position_in_dict(self, name, position_x, position_y, width, height):
         self.object_position_dict[name] = (position_x, position_y, width, height)
-        # print(self.object_position_dict)
 
-    def next_position(self, name_id, position_x, position_y, width, height, direction, speed):
+    def destroy_item_in_dict(self, name):
+        self.object_position_dict.pop(name)
+        print(f"destroy in dict ", name)
+
+    def next_position_player(self, name_id, position_x, position_y, width, height, direction, speed):
         if direction == "up":
             position_y -= speed
         elif direction == "down":
@@ -34,3 +41,13 @@ class Collision:
                         position_y <= y + h:
                     return False
         return True
+
+    def check_if_in_screen(self, position_x, position_y, width, height):
+        # value to can verify if is really destroy
+        value = 50
+        if position_x + width >= 0 + value and \
+                position_x <= self.ROOT_WIDTH - value and \
+                position_y + height >= 0 + value and \
+                position_y <= self.ROOT_HEIGHT - value:
+            return True
+        return False

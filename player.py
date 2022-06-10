@@ -1,5 +1,4 @@
 from object import Object
-from collision import Collision
 
 
 class Player(Object):
@@ -9,34 +8,40 @@ class Player(Object):
 
         self.direction = None
 
+    def get_position(self):
+        return self.position_x, self.position_y
+
+    def get_direction(self):
+        return self.direction
+
     def move_left(self):
+        self.name_image = "tank_left"
         self.direction = "left"
-        if self.collision.next_position(self.name_id, self.position_x, self.position_y, self.width, self.height,
-                                        self.direction, self.speed):
+        if self.collision.next_position_player(self.name_id, self.position_x, self.position_y, self.width, self.height,
+                                               self.direction, self.speed):
             self.position_x -= self.speed
-            self.name_image = "tank_left"
             self.set_new_position()
 
     def move_right(self):
+        self.name_image = "tank_right"
         self.direction = "right"
-        if self.collision.next_position(self.name_id, self.position_x, self.position_y, self.width, self.height,
-                                        self.direction, self.speed):
+        if self.collision.next_position_player(self.name_id, self.position_x, self.position_y, self.width, self.height,
+                                               self.direction, self.speed):
             self.position_x += self.speed
-            self.name_image = "tank_right"
             self.set_new_position()
 
     def move_down(self):
+        self.name_image = "tank_down"
         self.direction = "down"
-        if self.collision.next_position(self.name_id, self.position_x, self.position_y, self.width, self.height,
-                                        self.direction, self.speed):
+        if self.collision.next_position_player(self.name_id, self.position_x, self.position_y, self.width, self.height,
+                                               self.direction, self.speed):
             self.position_y += self.speed
-            self.name_image = "tank_down"
             self.set_new_position()
 
     def move_up(self):
+        self.name_image = "tank_up"
         self.direction = "up"
-        if self.collision.next_position(self.name_id, self.position_x, self.position_y, self.width, self.height,
-                                        self.direction, self.speed):
+        if self.collision.next_position_player(self.name_id, self.position_x, self.position_y, self.width, self.height,
+                                               self.direction, self.speed):
             self.position_y -= self.speed
-            self.name_image = "tank_up"
             self.set_new_position()

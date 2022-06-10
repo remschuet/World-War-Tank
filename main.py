@@ -3,6 +3,7 @@ from canvas_management import CanvasManagement
 
 """
     REFACTORING
+    deteruire l'item dans la list mtn 
 """
 
 pygame.init()
@@ -34,7 +35,7 @@ while launched:
     root.fill((0, 0, 0))
 
     # (fps) speed of the mouvement
-    clock.tick(120)
+    clock.tick(90)
 
     # call every frame
     canvas_management.call_every_frame()
