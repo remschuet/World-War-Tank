@@ -3,6 +3,7 @@ import pygame
 from collision import Collision
 from brick import Brick
 from bullet import Bullet
+from explosion import Explosion
 
 
 class Gameplay:
@@ -37,6 +38,12 @@ class Gameplay:
         self.number_of_bullet = 0
         self.bullet_dimension = 10
 
+        # particule
+        self.list_of_particule = []
+        self.list_of_particule_to_destroy = []
+        self.number_of_particule = 0
+        self.particule_dimension = 40
+
         # create player
         self.list_of_player = []
         self.set_new_player()
@@ -53,14 +60,17 @@ class Gameplay:
         return self.time_secs
 
     def call_every_frame(self):
-        # draw background
-        self.background_draw()
+        # reset background
+        self.background_reset()
+
         # draw object
-        self.player.set_object_image()
-        self.draw_brick()
-        self.draw_bullet()
+        self.management_draw()
+
         # move bullet
         self.move_bullet()
+        # particule
+        self.management_particule()
+
 
 # init and create
     def create_brick_level1(self):
@@ -84,7 +94,13 @@ class Gameplay:
         self.create_bullet()
 
 # draw
-    def background_draw(self):
+    def management_draw(self):
+        self.player.set_object_image()
+        self.draw_brick()
+        self.draw_bullet()
+        self.draw_particule()
+
+    def background_reset(self):
         self.root.blit(self.gameplay_image_level1, [0, 0])
 
     def draw_brick(self):
@@ -95,13 +111,19 @@ class Gameplay:
         for bullet in self.list_of_bullet:
             bullet.draw()
 
+    def draw_particule(self):
+        for particule in self.list_of_particule:
+            particule.draw()
+
 # bullet
     def remove_bullet_list(self, ):
         for bullet_item in self.list_of_bullet:
             if isinstance(bullet_item, Bullet):
                 for item_name_to_destroy in self.list_of_bullet_to_destroy:
                     if bullet_item.name_id == item_name_to_destroy:
+                        # x, y = bullet_item.get_position()
                         self.list_of_bullet.remove(bullet_item)
+                        # self.create_particule(x, y)
 
     def destroy_bullet(self, bullet_name):
         self.remove_bullet_list()
@@ -109,17 +131,25 @@ class Gameplay:
 
     def move_bullet(self):
         for bullet in self.list_of_bullet:
-            if bullet.get_if_check_collision() and bullet.get_if_in_screen():
-                # mouvement
-                bullet.movement()
+            if bullet.get_if_check_collision():
+                if bullet.get_if_in_screen():
+                    # mouvement
+                    bullet.movement()
+                else:
+                    self.bullet_cant_move(bullet)
             else:
-                # add in list the bullet to destroy
-                bullet_name_id = bullet.get_name_id()
-                self.list_of_bullet_to_destroy.append(bullet_name_id)
-                # fonction to destroy the bullet
-                self.destroy_bullet(bullet_name_id)
+                x, y = bullet.get_position()
+                self.create_particule(x, y)
+                self.bullet_cant_move(bullet)
 
-    def where_create_bullet(self, x, y, direction):
+    def bullet_cant_move(self, bullet):
+        # add in list the bullet to destroy
+        bullet_name_id = bullet.get_name_id()
+        self.list_of_bullet_to_destroy.append(bullet_name_id)
+        # fonction to destroy the bullet
+        self.destroy_bullet(bullet_name_id)
+
+    def position_for_create_bullet(self, x, y, direction):
         # value for not have collision with player
         value = 1
         if direction == "up":
@@ -140,8 +170,37 @@ class Gameplay:
         x, y = self.player.get_position()
         direction = self.player.get_direction()
         creation_time = self.time_secs
-        x, y = self.where_create_bullet(x, y, direction)
+        x, y = self.position_for_create_bullet(x, y, direction)
         self.number_of_bullet += 1
         self.list_of_bullet.append(Bullet(self.root, "bullet", "bullet"+str(self.number_of_bullet), x, y,
                                           self.bullet_dimension, self.bullet_dimension,
                                           self.object_speed, self.collision, direction, creation_time))
+
+# particule
+    def management_particule(self):
+        self.check_particule_time_creation()
+        self.remove_particule_list()
+
+    def create_particule(self, x, y):
+        self.number_of_particule += 1
+        creation_time = self.time_secs
+        self.list_of_particule.append(Explosion(self.root, "explosion", "explosion"+str(self.number_of_particule),
+                                                x-20, y-20, self.particule_dimension, self.particule_dimension,
+                                                self.object_speed, self.collision, creation_time))
+
+    def check_particule_time_creation(self):
+        for particule in self.list_of_particule:
+            if isinstance(particule, Explosion):
+                time_creation = particule.get_creation_time()
+                time_present = self.get_time_secs()
+                if time_present - time_creation >= 1:
+                    name = particule.get_name_id()
+                    self.list_of_particule_to_destroy.append(name)
+
+    def remove_particule_list(self):
+        for particule in self.list_of_particule:
+            if isinstance(particule, Explosion):
+                for particule_to_destroy in self.list_of_particule_to_destroy:
+                    if particule.name_id == particule_to_destroy:
+                        self.list_of_particule.remove(particule)
+                        self.list_of_particule_to_destroy.clear()

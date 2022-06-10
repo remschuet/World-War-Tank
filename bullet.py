@@ -15,6 +15,9 @@ class Bullet(Object):
     def get_name_id(self):
         return self.name_id
 
+    def get_position(self):
+        return self.position_x, self.position_y
+
     def get_creation_time(self):
         return self.creation_time
 
