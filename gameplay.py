@@ -1,5 +1,6 @@
 from player import Player
 import pygame
+from collision import Collision
 
 
 class Gameplay:
@@ -15,16 +16,18 @@ class Gameplay:
         self.TANK_HEIGHT = 70
         self.TANK_WIDTH = 70
 
-        # create player
-        self.set_new_player()
-
         # image background
         self.gameplay_image_level1 = pygame.image.load("asset/image/background.png")
         self.gameplay_image_level1 = pygame.transform.scale(self.gameplay_image_level1,
                                                             (self.ROOT_WIDTH, self.ROOT_HEIGHT))
+        # create collision management
+        self.collision = Collision()
+        # create player
+        self.set_new_player()
 
     def set_new_player(self):
-        self.player = Player(self.root, "tank_up", "tank1", 100, 100, self.TANK_WIDTH, self.TANK_HEIGHT, self.object_speed)
+        self.player = Player(self.root, "tank_up", "tank1", 100, 100, self.TANK_WIDTH, self.TANK_HEIGHT,
+                             self.object_speed, self.collision)
 
     def call_every_frame(self):
         self.background_draw()

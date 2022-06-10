@@ -3,7 +3,7 @@ import pygame
 
 class Object:
     def __init__(self, root, name_image: str, name_id: str, position_x: int, position_y: int, height: int, width: int,
-                 speed: float):
+                 speed: float, collision):
         self.root = root
         self.name_image = name_image
         self.name_id = name_id
@@ -12,6 +12,7 @@ class Object:
         self.height = height
         self.width = width
         self.speed = speed
+        self.collision = collision
 
         self.object_image = None
 
