@@ -15,7 +15,7 @@ class CanvasManagement:
 
         # canvas, init to gameplay
         self.root_gameplay = True
-        self.management_gameplay = None
+        self.gameplay = None
 
         # create management gameplay
         self.crete_management_gameplay()
@@ -24,7 +24,7 @@ class CanvasManagement:
         self.time_secs = 0
 
     def crete_management_gameplay(self):
-        self.management_gameplay = Gameplay(self.root, self.ROOT_WIDTH, self.ROOT_HEIGHT)
+        self.gameplay = Gameplay(self.root, self.ROOT_WIDTH, self.ROOT_HEIGHT)
 
     def get_launched(self):
         return self.launched
@@ -32,6 +32,7 @@ class CanvasManagement:
     def call_every_frame(self):
         if self.root_gameplay:
             self.check_key_event_gameplay()
+            self.gameplay.call_every_frame()
 
     def check_key_event_gameplay(self):
         for event in pygame.event.get():
@@ -50,4 +51,4 @@ class CanvasManagement:
         # player mouvement
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed:
-            return
+            self.gameplay.key_pressed(keys_pressed)
