@@ -1,4 +1,5 @@
 import pygame
+from canvas_management import CanvasManagement
 
 """
     REFACTORING
@@ -19,15 +20,24 @@ pygame.display.set_caption("Game")
 # create the clock (timer)
 clock = pygame.time.Clock()
 
-
+# root open
 launched = True
 
+# create canvas_management
+canvas_management = CanvasManagement(root, clock, launched, ROOT_WIDTH, ROOT_HEIGHT)
+
 while launched:
+    # verify if root is true
+    launched = canvas_management.launched
+
     # reset the screen to black
     root.fill((0, 0, 0))
 
     # (fps) speed of the mouvement
     clock.tick(120)
+
+    # call every frame
+    canvas_management.call_every_frame()
 
     # main loop
     pygame.display.update()
