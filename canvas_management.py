@@ -1,5 +1,5 @@
 import pygame
-from management_gameplay import ManagementGameplay
+from gameplay import Gameplay
 
 
 class CanvasManagement:
@@ -24,7 +24,7 @@ class CanvasManagement:
         self.time_secs = 0
 
     def crete_management_gameplay(self):
-        self.management_gameplay = ManagementGameplay()
+        self.management_gameplay = Gameplay(self.root, self.ROOT_WIDTH, self.ROOT_HEIGHT)
 
     def get_launched(self):
         return self.launched
@@ -51,5 +51,3 @@ class CanvasManagement:
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed:
             return
-
-
