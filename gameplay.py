@@ -54,8 +54,8 @@ class Gameplay:
         self.create_level1()
 
     def create_level1(self):
-        self.create_brick(100, 50)
-        self.create_brick(200, 100)
+        self.create_brick(700, 50)
+        self.create_brick(150, 100)
         self.create_brick(500, 500)
 
         self.create_brick(450, 100)
