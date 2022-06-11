@@ -40,6 +40,9 @@ class Collision:
         else:
             return False
 
+    def check_collision_box_ammo(self):
+        return
+
     def check_collision(self, name_id, position_x, position_y, width, height):
         for self.opponent_object, (x, y, w, h) in self.object_position_dict.items():
             if name_id != self.opponent_object:
@@ -53,15 +56,22 @@ class Collision:
                     elif self.opponent_object == "tank2":
                         self.player2_pv -= 1
                         print("player 2 down")
+
+                    elif self.opponent_object == "ammo1":
+                        if name_id == "tank1":
+                            print(f"{name_id}, supply ammo")
+                    elif self.opponent_object == "ammo1":
+                        if name_id == "tank2":
+                            print(f"{name_id}, supply ammo")
                     return False
         return True
 
     def check_if_in_screen(self, position_x, position_y, width, height):
         # value to can verify if is really destroy
-        value = 50
-        if position_x + width >= 0 + value and \
-                position_x <= self.ROOT_WIDTH - value and \
-                position_y + height >= 0 + value and \
-                position_y <= self.ROOT_HEIGHT - value:
+        if position_x + width >= 0 and \
+                position_x <= self.ROOT_WIDTH and \
+                position_y + height >= 0 and \
+                position_y <= self.ROOT_HEIGHT:
             return True
         return False
+

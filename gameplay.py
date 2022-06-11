@@ -5,7 +5,7 @@ from brick import Brick
 from bullet import Bullet
 from explosion import Explosion
 from sound import Sound
-from creation_level_brick import *
+from box_ammo import BoxAmmo
 
 
 class Gameplay:
@@ -25,6 +25,7 @@ class Gameplay:
 
         # ammo
         self.list_of_box_ammo = []
+        self.number_of_box_ammo = 0
 
         # player
         self.OBJECT_HEIGHT = 70
@@ -88,9 +89,10 @@ class Gameplay:
 
     def call_every_seconde(self):
         print()
-        # if not self.list_of_box_ammo:
-
-
+        if not self.list_of_box_ammo:
+            self.number_of_box_ammo += 1
+            self.list_of_box_ammo.append(BoxAmmo(self.root, "ammo", "ammo1", 430, 270, int(self.OBJECT_WIDTH/1.5),
+                                                 int(self.OBJECT_HEIGHT/1.5), self.object_speed, self.collision))
 
     def call_every_frame(self):
         # reset background
@@ -150,6 +152,7 @@ class Gameplay:
 
         self.draw_brick()
         self.draw_bullet()
+        self.draw_box_ammo()
         self.draw_particule()
 
         self.draw_players_ammo()
@@ -160,6 +163,11 @@ class Gameplay:
     def draw_brick(self):
         for brick in self.list_of_brick:
             brick.draw()
+
+    def draw_box_ammo(self):
+        for box_ammo in self.list_of_box_ammo:
+            if isinstance(box_ammo, BoxAmmo):
+                box_ammo.draw()
 
     def draw_bullet(self):
         for bullet in self.list_of_bullet:
