@@ -60,15 +60,20 @@ class CanvasManagement:
             if event.type == pygame.QUIT:
                 self.launched = False
             # create enemy with clock timer
-            elif event.type == pygame.USEREVENT:
+            if event.type == pygame.USEREVENT:
                 self.time_secs += 1
                 print(self.time_secs)
             # key up
-            elif event.type == pygame.KEYUP:
+            if event.type == pygame.KEYUP:
                 if event.key == pygame.K_3:
-                    self.gameplay.key_press_shoot()
+                    self.gameplay.key_press_shoot("player1")
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_1:
+                    self.gameplay.key_press_shoot("player2")
+
 
         # player mouvement
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed:
-            self.gameplay.key_pressed(keys_pressed)
+            self.gameplay.key_pressed_player_1(keys_pressed)
+            self.gameplay.key_pressed_player_2(keys_pressed)

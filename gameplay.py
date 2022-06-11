@@ -12,14 +12,16 @@ class Gameplay:
         self.ROOT_WIDTH = ROOT_WIDTH
         self.ROOT_HEIGHT = ROOT_HEIGHT
 
-        self.player = None
+        self.player1 = None
+        self.player2 = None
+
         self.time_secs = 0
 
         self.object_speed = 1.5
 
         # player
-        self.TANK_HEIGHT = 70
-        self.TANK_WIDTH = 70
+        self.OBJECT_HEIGHT = 70
+        self.OBJECT_WIDTH = 70
 
         # image background
         self.gameplay_image_level1 = pygame.image.load("asset/image/background.png")
@@ -47,14 +49,38 @@ class Gameplay:
         # create player
         self.list_of_player = []
         self.set_new_player()
-        self.create_brick_level1()
+
+        # level 1
+        self.create_level1()
+
+    def create_level1(self):
+        self.create_brick(100, 50)
+        self.create_brick(200, 100)
+        self.create_brick(500, 500)
+
+        self.create_brick(450, 100)
+        self.create_brick(450, 165)
+
+        self.create_brick(250, 260)
+        self.create_brick(250, 325)
+        self.create_brick(250, 390)
+
+        self.create_brick(650, 260)
+        self.create_brick(650, 325)
+        self.create_brick(650, 390)
 
     def set_time_secs(self, time):
         self.time_secs = time
 
     def set_new_player(self):
-        self.player = Player(self.root, "tank_up", "tank1", 100, 100, self.TANK_WIDTH, self.TANK_HEIGHT,
-                             self.object_speed, self.collision)
+        self.player1 = Player(self.root, "tank_left", "tank1", self.ROOT_WIDTH - self.OBJECT_WIDTH,
+                              int(self.ROOT_HEIGHT/2 - self.OBJECT_HEIGHT/2), self.OBJECT_WIDTH, self.OBJECT_HEIGHT,
+                              self.object_speed, self.collision)
+        self.player1.set_new_position()
+
+        self.player2 = Player(self.root, "tank_right", "tank2", 0, int(self.ROOT_HEIGHT/2 - self.OBJECT_HEIGHT/2),
+                              self.OBJECT_WIDTH, self.OBJECT_HEIGHT, self.object_speed, self.collision)
+        self.player2.set_new_position()
 
     def get_time_secs(self):
         return self.time_secs
@@ -62,40 +88,49 @@ class Gameplay:
     def call_every_frame(self):
         # reset background
         self.background_reset()
-
         # draw object
         self.management_draw()
-
         # move bullet
         self.move_bullet()
         # particule
         self.management_particule()
 
-
 # init and create
-    def create_brick_level1(self):
+    def create_brick(self, x, y):
         self.number_of_brick += 1
         self.list_of_brick.append(
-            Brick(self.root, "brick", "brick" + str(self.number_of_brick), 300, 300, self.TANK_WIDTH,
-                  self.TANK_HEIGHT, self.object_speed, self.collision))
+            Brick(self.root, "brick", "brick" + str(self.number_of_brick), x, y, self.OBJECT_WIDTH,
+                  self.OBJECT_HEIGHT, self.object_speed, self.collision))
 
 # key event
-    def key_pressed(self, keys):
-        if keys[pygame.K_LEFT] and self.player.position_x > 0:
-            self.player.move_left()
-        elif keys[pygame.K_RIGHT] and self.player.position_x < self.ROOT_WIDTH - self.TANK_WIDTH:
-            self.player.move_right()
-        elif keys[pygame.K_UP] and self.player.position_y > 0:
-            self.player.move_up()
-        elif keys[pygame.K_DOWN] and self.player.position_y < self.ROOT_HEIGHT - self.TANK_HEIGHT:
-            self.player.move_down()
+    def key_pressed_player_1(self, keys):
+        if keys[pygame.K_LEFT] and self.player1.position_x > 0:
+            self.player1.move_left()
+        elif keys[pygame.K_RIGHT] and self.player1.position_x < self.ROOT_WIDTH - self.OBJECT_WIDTH:
+            self.player1.move_right()
+        elif keys[pygame.K_UP] and self.player1.position_y > 0:
+            self.player1.move_up()
+        elif keys[pygame.K_DOWN] and self.player1.position_y < self.ROOT_HEIGHT - self.OBJECT_HEIGHT:
+            self.player1.move_down()
 
-    def key_press_shoot(self):
-        self.create_bullet()
+    def key_pressed_player_2(self, keys):
+        if keys[pygame.K_a] and self.player2.position_x > 0:
+            self.player2.move_left()
+        elif keys[pygame.K_d] and self.player2.position_x < self.ROOT_WIDTH - self.OBJECT_WIDTH:
+            self.player2.move_right()
+        elif keys[pygame.K_w] and self.player2.position_y > 0:
+            self.player2.move_up()
+        elif keys[pygame.K_s] and self.player2.position_y < self.ROOT_HEIGHT - self.OBJECT_HEIGHT:
+            self.player2.move_down()
+
+    def key_press_shoot(self, player: str):
+        self.create_bullet(player)
 
 # draw
     def management_draw(self):
-        self.player.set_object_image()
+        self.player1.set_object_image()
+        self.player2.set_object_image()
+
         self.draw_brick()
         self.draw_bullet()
         self.draw_particule()
@@ -152,23 +187,28 @@ class Gameplay:
     def position_for_create_bullet(self, x, y, direction):
         # value for not have collision with player
         value = 1
-        if direction == "up":
-            x += (self.TANK_WIDTH/2) - (self.bullet_dimension/2)
+        if direction == "tank_up":
+            x += (self.OBJECT_WIDTH / 2) - (self.bullet_dimension / 2)
             y -= self.bullet_dimension + value
-        elif direction == "down":
-            x += (self.TANK_WIDTH/2) - (self.bullet_dimension/2)
-            y += self.TANK_HEIGHT + value
-        elif direction == "left":
-            y += (self.TANK_HEIGHT/2) - (self.bullet_dimension/2)
+        elif direction == "tank_down":
+            x += (self.OBJECT_WIDTH / 2) - (self.bullet_dimension / 2)
+            y += self.OBJECT_HEIGHT + value
+        elif direction == "tank_left":
+            y += (self.OBJECT_HEIGHT / 2) - (self.bullet_dimension / 2)
             x -= self.bullet_dimension + value
-        elif direction == "right":
-            x += self.TANK_WIDTH + value
-            y += (self.TANK_HEIGHT/2) - (self.bullet_dimension/2)
+        elif direction == "tank_right":
+            x += self.OBJECT_WIDTH + value
+            y += (self.OBJECT_HEIGHT / 2) - (self.bullet_dimension / 2)
         return x, y
 
-    def create_bullet(self):
-        x, y = self.player.get_position()
-        direction = self.player.get_direction()
+    def create_bullet(self, player: str):
+        if player == "player1":
+            x, y = self.player1.get_position()
+            direction = self.player1.get_direction()
+        # player 2
+        else:
+            x, y = self.player2.get_position()
+            direction = self.player2.get_direction()
         creation_time = self.time_secs
         x, y = self.position_for_create_bullet(x, y, direction)
         self.number_of_bullet += 1

@@ -29,13 +29,13 @@ class Bullet(Object):
 
     def movement(self):
         # move from the player position x, y
-        if self.direction == "left":
+        if self.direction == "tank_left":
             self.position_x = self.position_x - self.speed
-        if self.direction == "right":
+        if self.direction == "tank_right":
             self.position_x = self.position_x + self.speed
-        if self.direction == "up":
+        if self.direction == "tank_up":
             self.position_y = self.position_y - self.speed
-        if self.direction == "down":
+        if self.direction == "tank_down":
             self.position_y = self.position_y + self.speed
         # set the new position
         self.set_new_position()

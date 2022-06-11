@@ -6,7 +6,7 @@ class Player(Object):
                  speed: float, collision):
         super().__init__(root, name_image, name_id, position_x, position_y, height, width, speed, collision)
 
-        self.direction = None
+        self.direction = name_image
 
     def get_position(self):
         return self.position_x, self.position_y
@@ -16,7 +16,7 @@ class Player(Object):
 
     def move_left(self):
         self.name_image = "tank_left"
-        self.direction = "left"
+        self.direction = "tank_left"
         if self.collision.next_position_player(self.name_id, self.position_x, self.position_y, self.width, self.height,
                                                self.direction, self.speed):
             self.position_x -= self.speed
@@ -24,7 +24,7 @@ class Player(Object):
 
     def move_right(self):
         self.name_image = "tank_right"
-        self.direction = "right"
+        self.direction = "tank_right"
         if self.collision.next_position_player(self.name_id, self.position_x, self.position_y, self.width, self.height,
                                                self.direction, self.speed):
             self.position_x += self.speed
@@ -32,7 +32,7 @@ class Player(Object):
 
     def move_down(self):
         self.name_image = "tank_down"
-        self.direction = "down"
+        self.direction = "tank_down"
         if self.collision.next_position_player(self.name_id, self.position_x, self.position_y, self.width, self.height,
                                                self.direction, self.speed):
             self.position_y += self.speed
@@ -40,7 +40,7 @@ class Player(Object):
 
     def move_up(self):
         self.name_image = "tank_up"
-        self.direction = "up"
+        self.direction = "tank_up"
         if self.collision.next_position_player(self.name_id, self.position_x, self.position_y, self.width, self.height,
                                                self.direction, self.speed):
             self.position_y -= self.speed

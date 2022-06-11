@@ -18,13 +18,13 @@ class Collision:
         print(f"destroy in dict ", name)
 
     def next_position_player(self, name_id, position_x, position_y, width, height, direction, speed):
-        if direction == "up":
+        if direction == "tank_up":
             position_y -= speed
-        elif direction == "down":
+        elif direction == "tank_down":
             position_y += speed
-        elif direction == "left":
+        elif direction == "tank_left":
             position_x -= speed
-        elif direction == "right":
+        elif direction == "tank_right":
             position_x += speed
 
         if self.check_collision(name_id, position_x, position_y, width, height):
