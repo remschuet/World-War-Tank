@@ -1,14 +1,22 @@
 class Collision:
-    def __init__(self, ROOT_WIDTH, ROOT_HEIGHT):
+    def __init__(self, ROOT_WIDTH, ROOT_HEIGHT, player1_pv, player2_pv):
 
         self.ROOT_WIDTH = ROOT_WIDTH
         self.ROOT_HEIGHT = ROOT_HEIGHT
+        self.player1_pv = player1_pv
+        self.player2_pv = player2_pv
 
         # dictionary for object name: x, y, w, h
         self.object_position_dict = {}
 
         # for the opponent collision
         self.opponent_object = None
+
+    def get_player1_pv(self):
+        return self.player1_pv
+
+    def get_player2_pv(self):
+        return self.player2_pv
 
     def set_new_position_in_dict(self, name, position_x, position_y, width, height):
         self.object_position_dict[name] = (position_x, position_y, width, height)
@@ -39,6 +47,12 @@ class Collision:
                         position_x <= x + w and \
                         position_y + height >= y and \
                         position_y <= y + h:
+                    if self.opponent_object == "tank1":
+                        print("player 1 down")
+                        self.player1_pv -= 1
+                    elif self.opponent_object == "tank2":
+                        self.player2_pv -= 1
+                        print("player 2 down")
                     return False
         return True
 

@@ -4,6 +4,8 @@ from collision import Collision
 from brick import Brick
 from bullet import Bullet
 from explosion import Explosion
+from sound import Sound
+from creation_level_brick import *
 
 
 class Gameplay:
@@ -13,22 +15,30 @@ class Gameplay:
         self.ROOT_HEIGHT = ROOT_HEIGHT
 
         self.player1 = None
+        self.player1_pv = 3
         self.player2 = None
+        self.player2_pv = 3
 
         self.time_secs = 0
 
         self.object_speed = 1.5
 
+        # ammo
+        self.list_of_box_ammo = []
+
         # player
         self.OBJECT_HEIGHT = 70
         self.OBJECT_WIDTH = 70
+
+        # create sound
+        self.sound = Sound()
 
         # image background
         self.gameplay_image_level1 = pygame.image.load("asset/image/background.png")
         self.gameplay_image_level1 = pygame.transform.scale(self.gameplay_image_level1,
                                                             (self.ROOT_WIDTH, self.ROOT_HEIGHT))
         # create collision management
-        self.collision = Collision(self.ROOT_WIDTH, self.ROOT_HEIGHT)
+        self.collision = Collision(self.ROOT_WIDTH, self.ROOT_HEIGHT, self.player1_pv, self.player2_pv)
 
         # brick
         self.list_of_brick = []
@@ -40,6 +50,10 @@ class Gameplay:
         self.number_of_bullet = 0
         self.bullet_dimension = 10
 
+        # ammo
+        self.number_of_ammo_player1 = None
+        self.number_of_ammo_player2 = None
+
         # particule
         self.list_of_particule = []
         self.list_of_particule_to_destroy = []
@@ -50,24 +64,11 @@ class Gameplay:
         self.list_of_player = []
         self.set_new_player()
 
+        # writing style
+        self.arial_font = pygame.font.SysFont("arial", 25, True)
+
         # level 1
         self.create_level1()
-
-    def create_level1(self):
-        self.create_brick(700, 50)
-        self.create_brick(150, 100)
-        self.create_brick(500, 500)
-
-        self.create_brick(450, 100)
-        self.create_brick(450, 165)
-
-        self.create_brick(250, 260)
-        self.create_brick(250, 325)
-        self.create_brick(250, 390)
-
-        self.create_brick(650, 260)
-        self.create_brick(650, 325)
-        self.create_brick(650, 390)
 
     def set_time_secs(self, time):
         self.time_secs = time
@@ -85,6 +86,12 @@ class Gameplay:
     def get_time_secs(self):
         return self.time_secs
 
+    def call_every_seconde(self):
+        print()
+        # if not self.list_of_box_ammo:
+
+
+
     def call_every_frame(self):
         # reset background
         self.background_reset()
@@ -101,6 +108,16 @@ class Gameplay:
         self.list_of_brick.append(
             Brick(self.root, "brick", "brick" + str(self.number_of_brick), x, y, self.OBJECT_WIDTH,
                   self.OBJECT_HEIGHT, self.object_speed, self.collision))
+
+    def get_player1_pv(self):
+        if self.collision.get_player1_pv() <= 0:
+            self.sound.play_player_right_win()
+        return self.collision.get_player1_pv()
+
+    def get_player2_pv(self):
+        if self.collision.get_player2_pv() <= 0:
+            self.sound.play_player_left_win()
+        return self.collision.get_player2_pv()
 
 # key event
     def key_pressed_player_1(self, keys):
@@ -124,7 +141,7 @@ class Gameplay:
             self.player2.move_down()
 
     def key_press_shoot(self, player: str):
-        self.create_bullet(player)
+        self.player_name_create_bullet(player)
 
 # draw
     def management_draw(self):
@@ -134,6 +151,8 @@ class Gameplay:
         self.draw_brick()
         self.draw_bullet()
         self.draw_particule()
+
+        self.draw_players_ammo()
 
     def background_reset(self):
         self.root.blit(self.gameplay_image_level1, [0, 0])
@@ -149,6 +168,13 @@ class Gameplay:
     def draw_particule(self):
         for particule in self.list_of_particule:
             particule.draw()
+
+    def draw_players_ammo(self):
+        player1_ammo = self.arial_font.render(f"{self.number_of_ammo_player1} bullets", True, (0, 0, 0))
+        self.root.blit(player1_ammo, [(self.ROOT_WIDTH - 110), 20])
+
+        player2_ammo = self.arial_font.render(f"{self.number_of_ammo_player2} bullets", True, (0, 0, 0))
+        self.root.blit(player2_ammo, [20, 20])
 
 # bullet
     def remove_bullet_list(self, ):
@@ -201,14 +227,22 @@ class Gameplay:
             y += (self.OBJECT_HEIGHT / 2) - (self.bullet_dimension / 2)
         return x, y
 
-    def create_bullet(self, player: str):
+    def player_name_create_bullet(self, player: str):
         if player == "player1":
-            x, y = self.player1.get_position()
-            direction = self.player1.get_direction()
+            if self.number_of_ammo_player1 >= 1:
+                self.number_of_ammo_player1 -= 1
+                x, y = self.player1.get_position()
+                direction = self.player1.get_direction()
+                self.create_bullet(x, y, direction)
         # player 2
         else:
-            x, y = self.player2.get_position()
-            direction = self.player2.get_direction()
+            if self.number_of_ammo_player2 >= 1:
+                self.number_of_ammo_player2 -= 1
+                x, y = self.player2.get_position()
+                direction = self.player2.get_direction()
+                self.create_bullet(x, y, direction)
+
+    def create_bullet(self, x, y, direction):
         creation_time = self.time_secs
         x, y = self.position_for_create_bullet(x, y, direction)
         self.number_of_bullet += 1
@@ -244,3 +278,42 @@ class Gameplay:
                     if particule.name_id == particule_to_destroy:
                         self.list_of_particule.remove(particule)
                         self.list_of_particule_to_destroy.clear()
+
+# level
+    def create_level1(self):
+        self.number_of_ammo_player1 = 10
+        self.number_of_ammo_player2 = 10
+
+        self.create_brick(700, 50)
+        self.create_brick(150, 100)
+        self.create_brick(500, 500)
+
+        self.create_brick(450, 100)
+        self.create_brick(450, 165)
+
+        self.create_brick(250, 260)
+        self.create_brick(250, 325)
+        self.create_brick(250, 390)
+
+        self.create_brick(650, 260)
+        self.create_brick(650, 325)
+        self.create_brick(650, 390)
+
+    def create_level2(self):
+        self.number_of_ammo_player1 = 10
+        self.number_of_ammo_player2 = 10
+
+        self.create_brick(700, 50)
+        self.create_brick(150, 100)
+        self.create_brick(500, 500)
+
+        self.create_brick(450, 100)
+        self.create_brick(450, 165)
+
+        self.create_brick(250, 260)
+        self.create_brick(250, 325)
+        self.create_brick(250, 390)
+
+        self.create_brick(650, 260)
+        self.create_brick(650, 325)
+        self.create_brick(650, 390)
