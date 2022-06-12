@@ -56,9 +56,6 @@ class Collision:
         else:
             return False
 
-    def check_collision_box_ammo(self):
-        return
-
     def check_collision(self, name_id, position_x, position_y, width, height):
         for self.opponent_object, (x, y, w, h) in self.object_position_dict.items():
             if name_id != self.opponent_object:

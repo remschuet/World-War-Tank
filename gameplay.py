@@ -252,6 +252,7 @@ class Gameplay:
         creation_time = self.time_secs
         x, y = self.position_for_create_bullet(x, y, direction)
         self.number_of_bullet += 1
+        self.sound.play_bullet_shoot()
         self.list_of_bullet.append(Bullet(self.root, "bullet", "bullet"+str(self.number_of_bullet), x, y,
                                           self.bullet_dimension, self.bullet_dimension,
                                           self.object_speed, self.collision, direction, creation_time))
@@ -264,6 +265,7 @@ class Gameplay:
     def create_particule(self, x, y):
         self.number_of_particule += 1
         creation_time = self.time_secs
+        self.sound.play_explosion()
         self.list_of_particule.append(Explosion(self.root, "explosion", "explosion"+str(self.number_of_particule),
                                                 x-20, y-20, self.particule_dimension, self.particule_dimension,
                                                 self.object_speed, self.collision, creation_time))
@@ -296,6 +298,7 @@ class Gameplay:
             self.collision.set_none_player_name_took_ammo()
             if self.collision.get_if_box_ammo_to_destroy():
                 self.destroy_box_ammo()
+                self.sound.play_reload()
 
     def destroy_box_ammo(self):
         self.list_of_box_ammo.clear()
@@ -304,7 +307,7 @@ class Gameplay:
     def create_box_ammo(self):
         if not self.list_of_box_ammo:
             self.number_of_box_ammo += 1
-            self.list_of_box_ammo.append(BoxAmmo(self.root, "ammo", "ammo1", 430, 270, int(self.OBJECT_WIDTH / 1.5),
+            self.list_of_box_ammo.append(BoxAmmo(self.root, "ammo", "ammo1", 430, 300, int(self.OBJECT_WIDTH / 1.5),
                                                  int(self.OBJECT_HEIGHT / 1.5), self.object_speed, self.collision))
 
 # level
