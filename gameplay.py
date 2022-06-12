@@ -54,6 +54,7 @@ class Gameplay:
         # ammo
         self.number_of_ammo_player1 = None
         self.number_of_ammo_player2 = None
+        self.create_box_ammo()
 
         # particule
         self.list_of_particule = []
@@ -89,10 +90,6 @@ class Gameplay:
 
     def call_every_seconde(self):
         print()
-        if not self.list_of_box_ammo:
-            self.number_of_box_ammo += 1
-            self.list_of_box_ammo.append(BoxAmmo(self.root, "ammo", "ammo1", 430, 270, int(self.OBJECT_WIDTH/1.5),
-                                                 int(self.OBJECT_HEIGHT/1.5), self.object_speed, self.collision))
 
     def call_every_frame(self):
         # reset background
@@ -103,6 +100,8 @@ class Gameplay:
         self.move_bullet()
         # particule
         self.management_particule()
+        # box_ammo
+        self.management_box_ammo()
 
 # init and create
     def create_brick(self, x, y):
@@ -154,8 +153,7 @@ class Gameplay:
         self.draw_bullet()
         self.draw_box_ammo()
         self.draw_particule()
-
-        self.draw_players_ammo()
+        self.draw_players_number_ammo()
 
     def background_reset(self):
         self.root.blit(self.gameplay_image_level1, [0, 0])
@@ -177,7 +175,7 @@ class Gameplay:
         for particule in self.list_of_particule:
             particule.draw()
 
-    def draw_players_ammo(self):
+    def draw_players_number_ammo(self):
         player1_ammo = self.arial_font.render(f"{self.number_of_ammo_player1} bullets", True, (0, 0, 0))
         self.root.blit(player1_ammo, [(self.ROOT_WIDTH - 110), 20])
 
@@ -185,7 +183,7 @@ class Gameplay:
         self.root.blit(player2_ammo, [20, 20])
 
 # bullet
-    def remove_bullet_list(self, ):
+    def remove_bullet_list(self):
         for bullet_item in self.list_of_bullet:
             if isinstance(bullet_item, Bullet):
                 for item_name_to_destroy in self.list_of_bullet_to_destroy:
@@ -286,6 +284,28 @@ class Gameplay:
                     if particule.name_id == particule_to_destroy:
                         self.list_of_particule.remove(particule)
                         self.list_of_particule_to_destroy.clear()
+
+# box ammo
+    def management_box_ammo(self):
+        player_name = self.collision.get_name_player_took_ammo()
+        if player_name:
+            if player_name == "player1":
+                self.number_of_ammo_player1 += 5
+            elif player_name == "player2":
+                self.number_of_ammo_player2 += 5
+            self.collision.set_none_player_name_took_ammo()
+            if self.collision.get_if_box_ammo_to_destroy():
+                self.destroy_box_ammo()
+
+    def destroy_box_ammo(self):
+        self.list_of_box_ammo.clear()
+        self.collision.set_none_box_ammo_to_destroy()
+
+    def create_box_ammo(self):
+        if not self.list_of_box_ammo:
+            self.number_of_box_ammo += 1
+            self.list_of_box_ammo.append(BoxAmmo(self.root, "ammo", "ammo1", 430, 270, int(self.OBJECT_WIDTH / 1.5),
+                                                 int(self.OBJECT_HEIGHT / 1.5), self.object_speed, self.collision))
 
 # level
     def create_level1(self):

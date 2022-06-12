@@ -6,6 +6,10 @@ class Collision:
         self.player1_pv = player1_pv
         self.player2_pv = player2_pv
 
+        self.box_ammo_to_destroy = False
+
+        self.name_player_took_ammo = None
+
         # dictionary for object name: x, y, w, h
         self.object_position_dict = {}
 
@@ -17,6 +21,18 @@ class Collision:
 
     def get_player2_pv(self):
         return self.player2_pv
+
+    def get_if_box_ammo_to_destroy(self):
+        return self.box_ammo_to_destroy
+
+    def get_name_player_took_ammo(self):
+        return self.name_player_took_ammo
+
+    def set_none_player_name_took_ammo(self):
+        self.name_player_took_ammo = None
+
+    def set_none_box_ammo_to_destroy(self):
+        self.box_ammo_to_destroy = False
 
     def set_new_position_in_dict(self, name, position_x, position_y, width, height):
         self.object_position_dict[name] = (position_x, position_y, width, height)
@@ -58,13 +74,20 @@ class Collision:
                         print("player 2 down")
 
                     elif self.opponent_object == "ammo1":
-                        if name_id == "tank1":
-                            print(f"{name_id}, supply ammo")
-                    elif self.opponent_object == "ammo1":
-                        if name_id == "tank2":
-                            print(f"{name_id}, supply ammo")
+                        self.check_if_collision_with_player(name_id)
+
                     return False
         return True
+
+    def check_if_collision_with_player(self, name_id):
+        if str(name_id) == "tank1":
+            self.name_player_took_ammo = "player1"
+            self.box_ammo_to_destroy = True
+            self.destroy_item_in_dict(self.opponent_object)
+        elif str(name_id) == "tank2":
+            self.name_player_took_ammo = "player2"
+            self.box_ammo_to_destroy = True
+            self.destroy_item_in_dict(self.opponent_object)
 
     def check_if_in_screen(self, position_x, position_y, width, height):
         # value to can verify if is really destroy
