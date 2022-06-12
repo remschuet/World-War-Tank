@@ -1,3 +1,5 @@
+import random
+
 from player import Player
 import pygame
 from collision import Collision
@@ -15,9 +17,9 @@ class Gameplay:
         self.ROOT_HEIGHT = ROOT_HEIGHT
 
         self.player1 = None
-        self.player1_pv = 3
+        self.player1_pv = 2
         self.player2 = None
-        self.player2_pv = 3
+        self.player2_pv = 2
 
         self.time_secs = 0
 
@@ -54,7 +56,6 @@ class Gameplay:
         # ammo
         self.number_of_ammo_player1 = None
         self.number_of_ammo_player2 = None
-        self.create_box_ammo()
 
         # particule
         self.list_of_particule = []
@@ -89,7 +90,8 @@ class Gameplay:
         return self.time_secs
 
     def call_every_seconde(self):
-        print()
+        if not self.list_of_box_ammo:
+            self.random_creation_box_ammo()
 
     def call_every_frame(self):
         # reset background
@@ -304,20 +306,38 @@ class Gameplay:
         self.list_of_box_ammo.clear()
         self.collision.set_none_box_ammo_to_destroy()
 
+    def random_creation_box_ammo(self):
+        position = random.randint(1, 10)
+        if position == 1:
+            self.create_box_ammo()
+
+    def random_position_box_ammo(self):
+        place = random.randint(1, 4)
+        if place == 1:
+            return 470, 340
+        elif place == 2:
+            return 300, 150
+        elif place == 3:
+            return 200, 480
+        elif place == 4:
+            return 640, 170
+
     def create_box_ammo(self):
-        if not self.list_of_box_ammo:
-            self.number_of_box_ammo += 1
-            self.list_of_box_ammo.append(BoxAmmo(self.root, "ammo", "ammo1", 430, 300, int(self.OBJECT_WIDTH / 1.5),
-                                                 int(self.OBJECT_HEIGHT / 1.5), self.object_speed, self.collision))
+        self.number_of_box_ammo += 1
+        x, y = self.random_position_box_ammo()
+        self.list_of_box_ammo.append(BoxAmmo(self.root, "ammo", "ammo1", x, y, int(self.OBJECT_WIDTH / 1.5),
+                                             int(self.OBJECT_HEIGHT / 1.5), self.object_speed, self.collision))
 
 # level
     def create_level1(self):
-        self.number_of_ammo_player1 = 10
-        self.number_of_ammo_player2 = 10
+        self.number_of_ammo_player1 = 5
+        self.number_of_ammo_player2 = 5
 
-        self.create_brick(700, 50)
+        self.create_brick(700, 90)
+        self.create_brick(400, 530)
+
         self.create_brick(150, 100)
-        self.create_brick(500, 500)
+        self.create_brick(470, 460)
 
         self.create_brick(450, 100)
         self.create_brick(450, 165)
