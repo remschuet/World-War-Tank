@@ -70,8 +70,24 @@ class Gameplay:
         # writing style
         self.arial_font = pygame.font.SysFont("arial", 25, True)
 
+        self.number_of_ammo_player1 = 10
+        self.number_of_ammo_player2 = 10
+
         # level 1
-        self.create_level1()
+        self.level1 = None
+        self.level2 = None
+        self.create_level()
+
+    def create_level(self):
+        level = random.randint(1, 2)
+        if level == 1:
+            self.level1 = True
+            self.level2 = False
+            self.create_level1()
+        elif level == 2:
+            self.level2 = True
+            self.level1 = False
+            self.create_level2()
 
     def set_time_secs(self, time):
         self.time_secs = time
@@ -312,15 +328,22 @@ class Gameplay:
             self.create_box_ammo()
 
     def random_position_box_ammo(self):
-        place = random.randint(1, 4)
-        if place == 1:
-            return 470, 340
-        elif place == 2:
-            return 300, 150
-        elif place == 3:
-            return 200, 480
-        elif place == 4:
-            return 640, 170
+        if self.level1:
+            place = random.randint(1, 4)
+            if place == 1:
+                return 470, 340
+            elif place == 2:
+                return 300, 150
+            elif place == 3:
+                return 200, 480
+            elif place == 4:
+                return 640, 170
+        elif self.level2:
+            place = random.randint(1, 2)
+            if place == 1:
+                return 445, 440
+            elif place == 2:
+                return 445, 110
 
     def create_box_ammo(self):
         self.number_of_box_ammo += 1
@@ -330,9 +353,6 @@ class Gameplay:
 
 # level
     def create_level1(self):
-        self.number_of_ammo_player1 = 5
-        self.number_of_ammo_player2 = 5
-
         self.create_brick(700, 90)
         self.create_brick(400, 530)
 
@@ -351,20 +371,19 @@ class Gameplay:
         self.create_brick(650, 390)
 
     def create_level2(self):
-        self.number_of_ammo_player1 = 10
-        self.number_of_ammo_player2 = 10
+        self.create_brick(250, 80)
+        self.create_brick(250, 170)
+        self.create_brick(250, 350)
+        self.create_brick(250, 440)
 
-        self.create_brick(700, 50)
-        self.create_brick(150, 100)
-        self.create_brick(500, 500)
+        self.create_brick(600, 80)
+        self.create_brick(600, 170)
+        self.create_brick(600, 350)
+        self.create_brick(600, 440)
 
-        self.create_brick(450, 100)
-        self.create_brick(450, 165)
+        self.create_brick(430, 260)
+        self.create_brick(430, 350)
+        self.create_brick(430, 170)
 
-        self.create_brick(250, 260)
-        self.create_brick(250, 325)
-        self.create_brick(250, 390)
-
-        self.create_brick(650, 260)
-        self.create_brick(650, 325)
-        self.create_brick(650, 390)
+        self.create_brick(430, 20)
+        self.create_brick(430, 510)
